@@ -1,3 +1,4 @@
+import taskRoutes from "./routes/taskRoutes.js";
 import express from "express";
 import dotenv from "dotenv";
 
@@ -18,6 +19,8 @@ app.use(cors());
 import authRoutes from "./routes/authRoutes.js";
 
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
+
 
 
 dotenv.config();
