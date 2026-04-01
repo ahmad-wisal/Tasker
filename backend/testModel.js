@@ -19,6 +19,7 @@ const runTests = async () => {
       role: "customer",
       location: "Swabi",
     });
+    
     await user.save();
     console.log("✅ User saved:", user.name);
 

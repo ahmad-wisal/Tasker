@@ -1,6 +1,13 @@
+import 'dotenv/config';
+import dns from 'dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
+// import dotenv from "dotenv";
+// dotenv.config();
+
 import taskRoutes from "./routes/taskRoutes.js";
 import express from "express";
-import dotenv from "dotenv";
+import stripeWebhookRoutes from "./routes/stripeWebhookRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 
 // const mongoose = require("mongoose");
@@ -12,6 +19,12 @@ import connectDB from "./config/db.js";
 
 const app = express(); // ✅ Must come before app.use()
 
+app.use(
+  "/api/stripe",
+express.raw({ type: "*/*" }),
+  stripeWebhookRoutes
+);
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -20,10 +33,8 @@ import authRoutes from "./routes/authRoutes.js";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/payments", paymentRoutes);
 
-
-
-dotenv.config();
 
 // MongoDB connection
 connectDB();
