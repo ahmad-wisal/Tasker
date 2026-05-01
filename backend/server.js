@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import dns from 'dns';
 dns.setServers(['8.8.8.8', '1.1.1.1']);
+import cookieParser from 'cookie-parser';
 // import dotenv from "dotenv";
 // dotenv.config();
 
@@ -9,27 +10,30 @@ import express from "express";
 import stripeWebhookRoutes from "./routes/stripeWebhookRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
-
 // const mongoose = require("mongoose");
 // const cors = require("cors");
 import cors from "cors";
 import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 
 
+const PORT = process.env.PORT || 3000;
 const app = express(); // ✅ Must come before app.use()
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
+
+// Middleware
+app.use(cookieParser());
+app.use(express.json());
+app.use(cors({ origin: frontendUrl, credentials: true }));
 
 app.use(
   "/api/stripe",
-express.raw({ type: "*/*" }),
+  express.raw({ type: "*/*" }),
   stripeWebhookRoutes
 );
 
-// Middleware
-app.use(express.json());
-app.use(cors());
-
-import authRoutes from "./routes/authRoutes.js";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
@@ -46,10 +50,9 @@ connectDB();
 
 // Routes
 app.get("/", (req, res) => {
-  console.log("Server is running on port 3000");
+  console.log("Server is running on port " + PORT);
   res.send("Hello from Express Server");
 });
 
 // Server
-const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Server started on http://localhost:${PORT}`));
