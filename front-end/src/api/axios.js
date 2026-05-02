@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_URL?.replace(/\/+$/, '');
+const configuredBaseURL = import.meta.env.VITE_API_URL?.replace(/\/+$/, '');
+const fallbackBaseURL = import.meta.env.DEV ? 'http://localhost:3000' : '';
+const baseURL = configuredBaseURL || fallbackBaseURL;
+
+if (!configuredBaseURL) {
+  console.warn(
+    `VITE_API_URL is not configured. Using ${baseURL || 'relative URLs'} instead.`
+  );
+}
 
 console.log("baseURL :", baseURL)
-
-if (!baseURL) {
-  throw new Error('VITE_API_URL is not configured. Set it in your environment files.');
-}
 
 const api = axios.create({
   baseURL,
