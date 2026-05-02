@@ -36,7 +36,6 @@ export default function LogIn() {
       navigate(getDashboardHome(data.user.role), { replace: true });
     }
     catch (error) {
-      console.log("login error :", error)
       const message = error?.response?.data?.message || 'Could not connect to the server.';
       toast.error(message);
 
