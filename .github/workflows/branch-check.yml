@@ -1,0 +1,17 @@
+name: "Branch Merge Policy"
+on:
+  pull_request:
+    branches:
+      - main  # Only trigger when someone tries to merge into main
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    # Only run the 'exit 1' logic if the target (base) is main
+    if: github.base_ref == 'main' 
+    steps:
+      - name: Check if source is dev
+        if: github.head_ref != 'dev'
+        run: |
+          echo "ERROR: You can only merge into 'main' from the 'dev' branch."
+          exit 1
