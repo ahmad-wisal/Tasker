@@ -10,6 +10,13 @@ const buildSafeUser = (user) => ({
   id: user._id.toString(),
   name: user.name,
   role: user.role,
+  profileImage: user.profileImage || null,
+  tagline: user.tagline || "",
+  bio: user.bio || "",
+  location: user.location || user.city || "",
+  skills: user.skills || [],
+  services: user.services || [],
+  availability: user.availability ?? true,
 });
 
 const createAuthToken = (userId, role) =>
@@ -53,7 +60,9 @@ export const registerUser = async (req, res) => {
     const email = req.body.email?.trim().toLowerCase();
     const password = req.body.password;
     const incomingRole = req.body.role?.trim().toLowerCase();
-    const location = req.body.city?.trim() || req.body.location?.trim() || undefined;
+    const city = req.body.city?.trim() || req.body.location?.trim() || undefined;
+
+    console.log("Incoming user data:", { name, email, password, incomingRole, city });
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Name, email, and password are required" });
@@ -77,11 +86,14 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      location,
+      city,
     });
 
     return sendAuthResponse(res, user, 201, "User registered successfully");
   } catch (error) {
+
+    console.log("user not register ")
+
     res.status(500).json({ message: error.message });
   }
 };
